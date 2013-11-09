@@ -1,0 +1,8 @@
+/null/
+packages
+*.dart.js
+*dart.js.map
+/*.lock
+*.dart.js.deps
+/.idea
+/*.iml
