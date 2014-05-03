@@ -1,0 +1,26 @@
+<div id="recipe-details">
+  <h3>Edit recipe Details</h3>
+    <a class="extra-space" href="#/recipe/{{cmp.recipe.recipeId}}/view">
+    <input type="button" ng-click="cmp.save()" value="Save edits"></a>
+    <a class="extra-space" href="#/recipe/{{cmp.recipe.recipeId}}/view">
+    <input type="button" ng-click="cmp.cancel()" value="Cacel edits"></a>
+  <div ng-if="cmp.recipe != null">
+    <div><strong>Name: </strong> <input type="text" ng-model="cmp.recipe.name"></div>
+    <div><strong>Category: </strong>  <select ng-model="cmp.recipe.category">
+            <option ng-repeat="c in cmp.categories" value="{{c}}">{{c}}</option></select> </div>
+    <div>
+      <strong>Ingredients:</strong>
+      <ul>
+        <li ng-repeat="ingredient in cmp.recipe.ingredients">
+          {{ingredient}}
+        </li>
+      </ul>
+
+    </div>
+    <div>
+      <strong>Directions:</strong>
+      <textarea ng-model="cmp.recipe.directions"></textarea>
+    </div>
+  </div>
+</div>
+

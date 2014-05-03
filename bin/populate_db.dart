@@ -1,6 +1,6 @@
 library blog_example;
 import 'package:objectory/objectory_console.dart';
-import '../service/domain_model.dart';
+import 'package:angular_dart_demo/service/domain_model.dart';
 import 'dart:async';
 const Uri = 'mongodb://127.0.0.1/angular_recipe_book';
 

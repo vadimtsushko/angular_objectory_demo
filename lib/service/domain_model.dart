@@ -1,6 +1,5 @@
 library domain_model;
 import 'package:objectory/objectory.dart';
-import 'dart:async';
 const DefaultUri = '127.0.0.1:8080';
 
 class Recipe extends PersistentObject  {
@@ -31,7 +30,7 @@ class Recipe extends PersistentObject  {
   String get directions => getProperty('directions');
   set directions(String value) => setProperty('directions',value);
 
-  String get key => id.toHexString();
+  String get recipeId => id.toHexString();
 }
 
 class Ingredient extends EmbeddedPersistentObject  {

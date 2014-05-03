@@ -12,7 +12,9 @@ Application based on example from angular.dart.tutorial Chapter 6 with Edit/Add/
 
 First steps:
 
-- If you have MongoDB installed locally with default settings, skip that. Otherwise edit connection strings in web/webapp/populate_db.dart and web/webapp/stream_server.dart
-- Run web/webapp/populate_db.dart
-- Run web/webapp/stream_server.dart 
-- Now you may use DartEditor launger or just open Dartium on http://127.0.0.1:8080/
+- If you have MongoDB installed locally with default settings, skip that. Otherwise edit connection strings in bin/populate_db.dart and bin/stream_server.dart
+- Run bin/populate_db.dart
+- Run bin/stream_server.dart 
+- Now you may use DartEditor launcher on web/index.ttml or just open Dartium on http://127.0.0.1:8080/
+
+Demo works with Angular 0.10.0

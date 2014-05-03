@@ -1,96 +1,19 @@
 library recipe_book;
 
-import 'dart:async';
 import 'package:angular/angular.dart';
-import 'package:di/di.dart';
-import 'package:angular/routing/module.dart';
+import 'package:angular/application_factory.dart';
 import 'package:logging/logging.dart';
-import 'package:perf_api/perf_api.dart';
-import 'service/domain_model.dart';
-import 'service/objectory_service.dart';
 
-import 'package:angular_objectory_demo/rating/rating_component.dart';
-import 'package:angular_objectory_demo/tooltip/tooltip_directive.dart';
-
-part 'filter/category_filter.dart';
-part 'routing/recipe_book_router.dart';
-part 'view/view_recipe_component.dart';
-part 'view/edit_recipe_component.dart';
-part 'view/add_recipe_component.dart';
-part 'view/search_recipe_component.dart';
-
-@NgController(
-    selector: '[recipe-book]',
-    publishAs: 'ctrl')
-class RecipeBookController {
-
-  static const String LOADING_MESSAGE = "Loading recipe book...";
-  static const String ERROR_MESSAGE = """Sorry! The cook stepped out of the 
-kitchen and took the recipe book with him!""";
-
-  Http _http;
-  ObjectoryService _queryService;
-  ObjectoryService get queryService => _queryService;
-
-  // Determine the initial load state of the app
-  String message = LOADING_MESSAGE;
-  bool recipesLoaded = false;
-  bool categoriesLoaded = false;
-
-  // Data objects that are loaded from the server side via json
-  List _categories = [];
-  get categories => _categories;
-  Map<String, Recipe> _recipeMap = {};
-  get recipeMap => _recipeMap;
-  get allRecipes => _recipeMap.values.toList();
-
-  // Filter box
-  Map<String, bool> categoryFilterMap = {};
-  String nameFilter = "";
-
-  RecipeBookController(Http this._http, ObjectoryService this._queryService) {
-    _loadData();
-  }
-
-  Recipe selectedRecipe;
-
-  void selectRecipe(Recipe recipe) {
-    selectedRecipe = recipe;
-  }
-
-  // Tooltip
-  static final tooltip = new Expando<TooltipModel>();
-  TooltipModel tooltipForRecipe(Recipe recipe) {
-    if (tooltip[recipe] == null) {
-      tooltip[recipe] = new TooltipModel(recipe.imgUrl,
-          "I don't have a picture of these recipes, "
-          "so here's one of my cat instead!",
-          80);
-    }
-    return tooltip[recipe]; // recipe.tooltip
-  }
-
-  void _loadData() {
-    _queryService.getAllCategories()
-      .then((List<String> allCategories) {
-        _categories = allCategories;
-        for (String category in _categories) {
-          categoryFilterMap[category] = false;
-        }
-        categoriesLoaded = true;
-        return _queryService.getAllRecipes();
-      }).then((Map<String, Recipe> allRecipes) {
-        _recipeMap = allRecipes;
-        recipesLoaded = true;
-      },
-      onError: (Object obj) {
-        recipesLoaded = false;
-        message = ERROR_MESSAGE;
-      });
-
-    
-  }
-}
+import 'package:angular_dart_demo/recipe_book.dart';
+import 'package:angular_dart_demo/formatter/category_filter.dart';
+import 'package:angular_dart_demo/rating/rating_component.dart';
+import 'package:angular_dart_demo/tooltip/tooltip.dart';
+import 'package:angular_dart_demo/service/query_service.dart';
+import 'package:angular_dart_demo/routing/recipe_book_router.dart';
+import 'package:angular_dart_demo/component/view_recipe_component.dart';
+import 'package:angular_dart_demo/component/edit_recipe_component.dart';
+import 'package:angular_dart_demo/component/add_recipe_component.dart';
+import 'package:angular_dart_demo/component/search_recipe_component.dart';
 
 class MyAppModule extends Module {
   MyAppModule() {
@@ -98,20 +21,22 @@ class MyAppModule extends Module {
     type(RatingComponent);
     type(Tooltip);
     type(CategoryFilter);
-    type(Profiler, implementedBy: Profiler); // comment out to enable profiling
     type(SearchRecipeComponent);
     type(ViewRecipeComponent);
     type(EditRecipeComponent);
     type(AddRecipeComponent);
-    type(ObjectoryService);
-    type(RouteInitializer, implementedBy: RecipeBookRouteInitializer);
+    type(QueryService);
+    type(NgRoutingHelper);
+    value(RouteInitializerFn, recipeBookRouteInitializer);
     factory(NgRoutingUsePushState,
         (_) => new NgRoutingUsePushState.value(false));
   }
 }
 
-main() {
-  Logger.root.level = Level.FINEST;
-  Logger.root.onRecord.listen((LogRecord r) { print(r.message); });
-  ngBootstrap(module: new MyAppModule());
+void main() {
+  Logger.root..level = Level.FINEST
+             ..onRecord.listen((LogRecord r) { print(r.message); });
+  applicationFactory()
+      .addModule(new MyAppModule())
+      .run();
 }

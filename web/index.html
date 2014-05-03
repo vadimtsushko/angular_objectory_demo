@@ -4,19 +4,14 @@
     <title>Chapter Six - A Simple Recipe Book</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body ng-cloak>
-
-  <div recipe-book>
-  
-    <header id="header">
-      <h2>Angular is fun! Here's a recipe book to prove it!</h2>
-    </header>
-    
-    <div ng-if="!ctrl.recipesLoaded || !ctrl.categoriesLoaded">
+<body recipe-book ng-cloak>
+  <div ng-switch="ctrl.recipesLoaded && ctrl.categoriesLoaded">
+    <div ng-switch-when="false">
       {{ctrl.message}}
     </div>
-    
-    <div ng-if="ctrl.recipesLoaded && ctrl.categoriesLoaded">
+    <div ng-switch-when="true">
+      <h3>Recipe List</h3>
+
       <nav id="controls">
         <search-recipe 
             name-filter-string="ctrl.nameFilter"
@@ -32,7 +27,7 @@
             <li ng-repeat="recipe in ctrl.allRecipes | orderBy:'name' | filter:{name:ctrl.nameFilter} | categoryfilter:ctrl.categoryFilterMap">
               <span tooltip="ctrl.tooltipForRecipe(recipe)">
                 <rating max-rating="5" rating="recipe.rating"></rating>
-                <a class="extra-space" href="#/recipe/{{recipe.key}}/view">{{recipe.name}}</a>
+                <a class="extra-space" href="#/recipe/{{recipe.recipeId}}/view">{{recipe.name}}</a>
               </span>
             </li>
           </ul>
@@ -47,7 +42,8 @@
 
   </div>
 
+  <script src="packages/shadow_dom/shadow_dom.min.js"></script>
   <script type="application/dart" src="main.dart"></script>
-  <script src="packages/browser/dart.js"></script>
+  <script type="text/javascript" src="packages/browser/dart.js"></script>
 </body>
 </html>
